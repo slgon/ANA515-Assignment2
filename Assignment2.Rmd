@@ -1,0 +1,74 @@
+---
+title: "Assignment2_SG"
+author: "Siliang Gong"
+date: "November 13, 2021"
+output: pdf_document
+---
+
+
+``` {r setup, include = FALSE}
+library(dplyr)
+library(knitr)
+#library(kableExtra)
+```
+
+## Description of the data
+
+The data used in this assignment is a Breast Cancer Coimbra data set, which is publicly available at UCI machine learning repository [(link)](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Coimbra). The data set includes clinical features measurement for 64 patients with breast cancer and 52 healthy controls. There are 10 predictors, all quantitative, and a binary dependent variable, indicating the presence or absence of breast cancer. The predictors are anthropometric data and parameters which can be gathered in routine blood analysis. Prediction models could be build to investigate the association between the clinical features and the disease status, and potentially benefit diagnosis. The data are stored in a csv format excel file, which is comma delimited. 
+
+## Read the data
+
+```{r echo = TRUE}
+
+# read the data into a dataframe
+
+breast.data <- read.csv("dataR2.csv")
+
+```
+
+## Clean the data
+
+```{r echo = TRUE}
+# rename Classification to group and change group = 1 to "Healthy" and group =2 to "Patients"
+
+breast.data = rename(breast.data, group = Classification)
+breast.data$group[breast.data$group == 1] = "Healthy"
+breast.data$group[breast.data$group == 2] = "Patients"
+
+# select a subset of features
+breast.data = breast.data%>%select(Age, BMI, Glucose, Insulin, group)
+
+```
+
+## Data characteristics
+
+This dataframe has `r nrow(breast.data)` rows and `r ncol(breast.data)` columns. The names of the columns and a brief description of each are in the table below:
+
+```{r, echo = TRUE}
+Variable = colnames(breast.data)
+Description = c("Age for each sample in years",
+                "Body mass index (BMI), defined as the body mass divided
+                by the square of the body height, in units of kg/m2",
+                "Glucose level, measured in mg/dL",
+                "Insulin level, measured in µU/mL",
+                "Group indicator for each sample, either healthy control or patients")
+vars = data.frame(Variable, Description)
+kable(vars, caption =  "Summary of variables")
+
+```
+
+## Summary statistics
+
+```{r echo = TRUE}
+
+# select Age, BMI and Glucose from the original data
+sub.data = breast.data%>%select(Age, BMI, Glucose)
+
+# obtain summary statistics
+
+sub.summary = summary(sub.data)
+sub.summary
+
+```
+
+There are no missing values in any of the three variables.
